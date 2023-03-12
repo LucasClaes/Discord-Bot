@@ -1,6 +1,11 @@
-import discord
+
+#disctionary met user id's importen van 'User_Id.py'
 from User_Id import *
+#Token Importen
 from Token import TOKEN
+
+
+import discord
 from discord import app_commands
 from discord.ext import commands
 
