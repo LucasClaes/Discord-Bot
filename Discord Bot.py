@@ -1,35 +1,39 @@
 
 error = 0
+debug = True
 
 #Libraries laden
 import colorama
 from colorama import Fore
 
-#disctionary met user id's importen van 'User_Id.py'
-try:
-    from User_Id import *
-except:
-    print(Fore.RED + "Encountered an issue while loading user id's.")
-    error += 1
-
-
 #Token Importen
 try:
     from Token import TOKEN
-except:
-    print(Fore.RED + "Encountered an issue while loading token.")
-    error += 1
+except Exception as e:
+    if debug is True:
+        print(e)
+        print(Fore.RED + "Encountered an issue while loading token.")
+        error += 1
+    else:
+        print(Fore.RED + "Encountered an issue while loading token.")
+        error += 1
 
 
 try:
     import discord
     from discord import app_commands
     from discord.ext import commands
-except:
-    print(Fore.RED + "Encountered an issue while loading discord library.")
-    error += 1
+except Exception as e:
+    if debug is True:
+        print(e)
+        print(Fore.RED + "Encountered an issue while loading discord library.")
+        error += 1
+    else:
+        print(Fore.RED + "Encountered an issue while loading discord library.")
+        error += 1
 
 
+#Main loop
 def Main():
     bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
@@ -40,6 +44,8 @@ def Main():
         try:
             synced = await bot.tree.sync()
             print(f"Synced {len(synced)} command(s)")
+            if debug is True:
+                print(synced)
         except Exception as e:
             print(e)
 
@@ -48,14 +54,10 @@ def Main():
     @app_commands.describe(keer="Hoeveel keer ik deze persoon moet spammen.")
     async def spam(interaction: discord.Interaction, persoon: str, keer: int):
         await interaction.response.send_message(f"Spamming {persoon} {keer}x",ephemeral =True)
-        user = user_ids.get(persoon.lower())
-        if user is None:
-            await interaction.response.send_message(f"Unknown person: {persoon}", )
-            return
         channel = interaction.channel
-        print(f"Spamming {persoon} {keer}x in opdracht van {interaction.user.name}.")
+        print(f"Spamming {str(persoon)} {keer}x requested by @{interaction.user.name}.")
         for i in range(keer):
-            await channel.send(f"<@{user}>")
+            await channel.send(f"{persoon}")
 
     @bot.tree.command(name="clear")
     @app_commands.describe(ammount="Hoeveel berichten ik moet verwijderen")
@@ -66,10 +68,16 @@ def Main():
 
     @bot.event
     async def on_message(message):
-        await bot.process_commands(message) # add this if also using command decorators
+        await bot.process_commands(message)
         if message.author.id == 1084555252365283441 and "@" in message.content.lower():
-            await message.delete()
-
+            try:
+                await message.delete()
+            except Exception as e:
+                if debug is True:
+                    print(e)
+                else:
+                    print("Non fatal error occured while deleting a message")
+    
 
     bot.run(TOKEN)
 
