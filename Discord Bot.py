@@ -1,11 +1,11 @@
+#Config
+debug = False
 
-error = 0
-debug = True
 
 #Libraries laden
 import colorama
 from colorama import Fore
-
+error = 0
 #Token Importen
 try:
     from Token import TOKEN
@@ -17,7 +17,6 @@ except Exception as e:
     else:
         print(Fore.RED + "Encountered an issue while loading token.")
         error += 1
-
 
 try:
     import discord
@@ -31,7 +30,6 @@ except Exception as e:
     else:
         print(Fore.RED + "Encountered an issue while loading discord library.")
         error += 1
-
 
 #Main loop
 def Main():
@@ -62,7 +60,7 @@ def Main():
     @bot.tree.command(name="clear")
     @app_commands.describe(ammount="Hoeveel berichten ik moet verwijderen")
     async def clear(interaction: discord.Interaction, ammount: int):
-        await interaction.response.send_message(f"Clearing {ammount} bericht.",ephemeral =True)
+        await interaction.response.send_message(f"Clearing {ammount} bericht(en).",ephemeral =True)
         await interaction.channel.purge(limit=ammount)
 
 
