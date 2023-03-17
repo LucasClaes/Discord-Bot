@@ -1,13 +1,34 @@
 
+error = 0
+
+#Libraries laden
+import colorama
+from colorama import Fore
+
 #disctionary met user id's importen van 'User_Id.py'
-from User_Id import *
+try:
+    from User_Id import *
+except:
+    print(Fore.RED + "Encountered an issue while loading user id's.")
+    error += 1
+
+
 #Token Importen
-from Token import TOKEN
+try:
+    from Token import TOKEN
+except:
+    print(Fore.RED + "Encountered an issue while loading token.")
+    error += 1
 
 
-import discord
-from discord import app_commands
-from discord.ext import commands
+try:
+    import discord
+    from discord import app_commands
+    from discord.ext import commands
+except:
+    print(Fore.RED + "Encountered an issue while loading discord library.")
+    error += 1
+
 
 def Main():
     bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
@@ -52,5 +73,8 @@ def Main():
 
     bot.run(TOKEN)
 
-if __name__ == '__main__':
+if error > 0:
+    print(f"Aborting startup {error} error(s)")
+elif __name__ == '__main__':
+    print(Fore.GREEN + "No errors while loading\nContinuing to startup")
     Main()
